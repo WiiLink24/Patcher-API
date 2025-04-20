@@ -54,7 +54,7 @@ Edit Catalog Item "{{ item.name }}" - Patch Manager
                     </div>
                 </div>
                 
-                <div class="flex justify-between space-x-3 pt-4">
+                <div class="flex flex-col sm:flex-row justify-between space-x-3 pt-4 gap-6">
                     <div class="flex items-center text-gray-400 text-sm">
                         <div class="p-1.5 bg-indigo-600/10 rounded-md text-indigo-400 mr-2">
                             <img src="/static/icon/fingerprint.svg" alt="Icon" class="w-5 h-5 invert" />
@@ -62,7 +62,7 @@ Edit Catalog Item "{{ item.name }}" - Patch Manager
                         <span>Item ID: <span class="font-mono text-indigo-300">{{ item.item_id }}</span> (cannot be changed)</span>
                     </div>
                     
-                    <div class="flex space-x-3">
+                    <div class="!m-0 flex space-x-3">
                         <a href="/patches" class="px-5 py-2 border border-gray-600 rounded-lg shadow-sm text-sm font-medium text-gray-300 bg-gray-700 hover:bg-gray-600 transition-colors duration-200">
                             Cancel
                         </a>

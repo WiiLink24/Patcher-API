@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="WiiLink Patch Manager" />
@@ -9,201 +10,151 @@
     <link rel="icon" href="/static/icon/favicon.png" type="image/png" />
     <title>{% block title %} {% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
-  </head>
+</head>
 
-  <body class="bg-gray-900 min-h-screen">
-    <div class="md:hidden fixed top-4 left-4 z-30">
-      <button
-        id="mobileMenuBtn"
-        class="p-2 bg-gray-800 rounded-lg text-white shadow-lg border border-gray-700 focus:outline-none"
-      >
-        <img src="/static/icon/menu.svg" alt="Menu" class="w-6 h-6 invert" />
-      </button>
+<body class="bg-gray-900 min-h-screen">
+    <div class="w-screen md:hidden fixed p-4 flex flex-row items-center justify-between z-30">
+        <img src="/static/img/is_logo.png" alt="Logo" class="h-8" />
+        <button id="mobileMenuBtn"
+            class="p-2 bg-gray-800 rounded-lg text-white shadow-lg border border-gray-700 focus:outline-none">
+            <img src="/static/icon/menu.svg" alt="Menu" class="w-6 h-6 invert" />
+        </button>
     </div>
 
     <div class="flex">
-      <div
-        id="sidebar"
-        class="w-[300px] h-screen bg-gray-800/80 border-r border-gray-700 p-6 fixed top-0 left-0 flex flex-col justify-between transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-40"
-      >
-        <div>
-          <div class="mb-6 flex justify-between items-start">
-            <div>
-              <h1 class="text-xl font-bold text-white mb-1">
-                WiiLink Patch Manager
-              </h1>
-              <p class="text-gray-400 text-sm italic">
-                I wonder if sweatshops also have patch managers...
-              </p>
+        <div id="sidebar"
+            class="w-[300px] h-screen bg-gray-800/80 backdrop-blur-xl border-r border-gray-700 p-6 fixed top-0 left-0 flex flex-col justify-between transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-40">
+            <div class="overflow-y-scroll h-full">
+                <div class="mb-6 flex justify-between items-start">
+                    <div>
+                        <img src="/static/img/is_logo.png" alt="Logo" class="h-10 mb-6" />
+                        <h1 class="text-xl font-bold text-white mb-1">
+                            WiiLink Patch Manager
+                        </h1>
+                        <p class="text-gray-400 text-sm italic">
+                            I wonder if sweatshops also have patch managers...
+                        </p>
+                    </div>
+
+                    <button id="closeSidebarBtn" class="md:hidden text-gray-400 hover:text-white">
+                        <img src="/static/icon/x.svg" alt="Close" class="w-6 h-6 invert" />
+                    </button>
+                </div>
+
+                {% if not main %}
+                <a href="/patches"
+                    class="mt-6 bg-indigo-400/10 hover:bg-indigo-300/10 text-white px-4 py-2 rounded-xl flex items-center jusfity-center group">
+                    <img src="/static/icon/arrow-left.svg" alt="Icon"
+                        class="w-5 h-5 invert mr-2 group-hover:-translate-x-1 transition-transform duration-200" />
+                    Back to Patches
+                </a>
+                {% endif %}
+
+                <div class="space-y-3 mt-8">
+                    <a href="/patches/new"
+                        class="w-full px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl transition duration-200 flex items-center">
+                        <img src="/static/icon/plus.svg" alt="Icon" class="w-5 h-5 invert mr-2" /> Create New Patch
+                    </a>
+
+                    <a href="/catalog/new"
+                        class="w-full px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition duration-200 flex items-center">
+                        <img src="/static/icon/folder-plus.svg" alt="Icon" class="w-5 h-5 invert mr-2" /> Create New
+                        Item
+                    </a>
+                </div>
+
+                {% if main %}
+                <nav class="mt-8">
+                    <h3 class="text-xs uppercase font-semibold text-gray-400 tracking-wider mb-3">
+                        Navigation
+                    </h3>
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="#patches"
+                                class="flex items-center text-gray-300 hover:text-white px-3 py-2 rounded-xl hover:bg-gray-700/50 transition-colors">
+                                <img src="/static/icon/git-fork.svg" alt="Icon" class="w-5 h-5 invert mr-2" />
+                                <span>Patches</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#catalog"
+                                class="flex items-center text-gray-300 hover:text-white px-3 py-2 rounded-xl hover:bg-gray-700/50 transition-colors">
+                                <img src="/static/icon/database.svg" alt="Icon" class="w-5 h-5 invert mr-2" />
+                                <span>Catalog</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                {% endif %}
             </div>
-
-            <button
-              id="closeSidebarBtn"
-              class="md:hidden text-gray-400 hover:text-white"
-            >
-                <img
-                    src="/static/icon/x.svg"
-                    alt="Close"
-                    class="w-6 h-6 invert"
-                />
-            </button>
-          </div>
-
-          {% if not main %}
-          <a
-            href="/patches"
-            class="mt-6 bg-indigo-400/10 hover:bg-indigo-300/10 text-white px-4 py-2 rounded-xl flex items-center jusfity-center group"
-          >
-            <img
-              src="/static/icon/arrow-left.svg"
-              alt="Icon"
-              class="w-5 h-5 invert mr-2 group-hover:-translate-x-1 transition-transform duration-200"
-            />
-            Back to Patches
-          </a>
-          {% endif %}
-
-          <div class="space-y-3 mt-8">
-            <a
-              href="/patches/new"
-              class="w-full px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl transition duration-200 flex items-center"
-            >
-              <img src="/static/icon/plus.svg" alt="Icon" class="w-5 h-5 invert mr-2" /> Create New Patch
-            </a>
-
-            <a
-              href="/catalog/new"
-              class="w-full px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition duration-200 flex items-center"
-            >
-                <img src="/static/icon/folder-plus.svg" alt="Icon" class="w-5 h-5 invert mr-2" /> Create New Item
-            </a>
-          </div>
-
-          {% if main %}
-        <nav class="mt-8">
-          <h3
-            class="text-xs uppercase font-semibold text-gray-400 tracking-wider mb-3"
-          >
-            Navigation
-          </h3>
-          <ul class="space-y-2">
-            <li>
-              <a
-                href="#patches"
-                class="flex items-center text-gray-300 hover:text-white px-3 py-2 rounded-xl hover:bg-gray-700/50 transition-colors"
-              >
-                <img
-                  src="/static/icon/git-fork.svg"
-                  alt="Icon"
-                  class="w-5 h-5 invert mr-2"
-                />
-                <span>Patches</span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="#catalog"
-                class="flex items-center text-gray-300 hover:text-white px-3 py-2 rounded-xl hover:bg-gray-700/50 transition-colors"
-              >
-                <img
-                  src="/static/icon/database.svg"
-                  alt="Icon"
-                  class="w-5 h-5 invert mr-2"
-                />
-                <span>Catalog</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
-        {% endif %}
-        </div>
-
-        <div>
-          <div
-            class="flex items-center space-x-4 mb-4 pb-4 border-b border-gray-700"
-          >
-            <!-- User Profile Picture -->
-            {% if user_info.profile_picture %}
-            <div
-              class="w-10 h-10 rounded-full bg-gray-700 overflow-hidden shadow-lg border border-gray-600"
-            >
-              <img
-                src="{{ user_info.profile_picture }}"
-                alt="{{ user_info.username }}"
-                class="w-full h-full object-cover"
-              />
-            </div>
-            {% else %}
-            <div
-              class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-600 to-indigo-800 flex items-center justify-center text-white shadow-lg"
-            >
-              <img
-                src="/static/icon/user.svg"
-                alt="{{ user_info.username }}"
-                class="w-6 h-6 invert"
-              />
-            </div>
-            {% endif %}
 
             <div>
-              <div class="text-white font-medium">{{ user_info.username }}</div>
-              <div class="text-gray-400 text-sm">{{ user_info.full_name }}</div>
+                <div class="flex items-center space-x-4 my-4 pb-4 border-b border-gray-700">
+                    <!-- User Profile Picture -->
+                    {% if user_info.profile_picture %}
+                    <div class="w-10 h-10 rounded-full bg-gray-700 overflow-hidden shadow-lg border border-gray-600">
+                        <img src="{{ user_info.profile_picture }}" alt="{{ user_info.username }}"
+                            class="w-full h-full object-cover" />
+                    </div>
+                    {% else %}
+                    <div
+                        class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-600 to-indigo-800 flex items-center justify-center text-white shadow-lg">
+                        <img src="/static/icon/user.svg" alt="{{ user_info.username }}" class="w-6 h-6 invert" />
+                    </div>
+                    {% endif %}
+
+                    <div>
+                        <div class="text-white font-medium">{{ user_info.username }}</div>
+                        <div class="text-gray-400 text-sm">{{ user_info.full_name }}</div>
+                    </div>
+                </div>
+
+                <a href="/logout"
+                    class="flex items-center space-x-2 text-gray-400 hover:text-white transition-colors group mb-6">
+                    <img src="/static/icon/log-out.svg" alt="Logout"
+                        class="w-5 h-5 invert group-hover:-translate-x-1 transition-transform duration-200" />
+                    <span>Logout</span>
+                </a>
+
+                <p class="text-sm text-gray-500">© 2025 WiiLink Team</p>
             </div>
-          </div>
-
-          <a
-            href="/logout"
-            class="flex items-center space-x-2 text-gray-400 hover:text-white transition-colors group mb-6"
-          >
-            <img
-              src="/static/icon/log-out.svg"
-              alt="Logout"
-              class="w-5 h-5 invert group-hover:-translate-x-1 transition-transform duration-200"
-            />
-            <span>Logout</span>
-          </a>
-
-          <p class="text-sm text-gray-500">© 2025 WiiLink Team</p>
         </div>
-      </div>
 
-      <div
-        id="sidebarOverlay"
-        class="fixed inset-0 bg-gray-900/80 z-30 hidden md:hidden"
-      ></div>
+        <div id="sidebarOverlay" class="fixed inset-0 bg-gray-900/80 z-30 hidden md:hidden"></div>
 
-      <div class="w-full md:ml-[300px] md:w-[calc(100%-300px)] min-h-screen">
-        {% block content %}{% endblock %}
-      </div>
+        <div class="mt-10 sm:mt-0 w-full md:ml-[300px] md:w-[calc(100%-300px)] min-h-screen">
+            {% block content %}{% endblock %}
+        </div>
     </div>
 
     <script>
-      const sidebar = document.getElementById("sidebar");
-      const mobileMenuBtn = document.getElementById("mobileMenuBtn");
-      const closeSidebarBtn = document.getElementById("closeSidebarBtn");
-      const overlay = document.getElementById("sidebarOverlay");
+        const sidebar = document.getElementById("sidebar");
+        const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+        const closeSidebarBtn = document.getElementById("closeSidebarBtn");
+        const overlay = document.getElementById("sidebarOverlay");
 
-      mobileMenuBtn.addEventListener("click", () => {
-        sidebar.classList.remove("-translate-x-full");
-        overlay.classList.remove("hidden");
-        document.body.classList.add("overflow-hidden");
-      });
+        mobileMenuBtn.addEventListener("click", () => {
+            sidebar.classList.remove("-translate-x-full");
+            overlay.classList.remove("hidden");
+            document.body.classList.add("overflow-hidden");
+        });
 
-      function closeSidebar() {
-        sidebar.classList.add("-translate-x-full");
-        overlay.classList.add("hidden");
-        document.body.classList.remove("overflow-hidden");
-      }
-
-      closeSidebarBtn.addEventListener("click", closeSidebar);
-      overlay.addEventListener("click", closeSidebar);
-
-      window.addEventListener("resize", () => {
-        if (window.innerWidth >= 768) {
-          overlay.classList.add("hidden");
-          document.body.classList.remove("overflow-hidden");
+        function closeSidebar() {
+            sidebar.classList.add("-translate-x-full");
+            overlay.classList.add("hidden");
+            document.body.classList.remove("overflow-hidden");
         }
-      });
+
+        closeSidebarBtn.addEventListener("click", closeSidebar);
+        overlay.addEventListener("click", closeSidebar);
+
+        window.addEventListener("resize", () => {
+            if (window.innerWidth >= 768) {
+                overlay.classList.add("hidden");
+                document.body.classList.remove("overflow-hidden");
+            }
+        });
     </script>
-  </body>
+</body>
+
 </html>
