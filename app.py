@@ -1,5 +1,6 @@
 import config
-from flask import Flask
+from flask import Flask, redirect
+from flask_oidc import OpenIDConnect
 from flask_migrate import Migrate
 from models import db
 
@@ -16,9 +17,20 @@ db.init_app(app)
 
 migrate = Migrate(app, db)
 
+oidc = OpenIDConnect(app)
+
 with app.app_context():
     # Ensure our database is present.
     db.create_all()
 
+@app.route('/')
+def login():
+    return oidc.redirect_to_auth_server(config.oidc_redirect_uri)
+
+@app.route('/logout')
+def logout():
+    oidc.logout()
+    return redirect(config.oidc_logout_url)
 
 import catalog
+import patches
