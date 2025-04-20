@@ -1,5 +1,5 @@
 import config
-from flask import Flask, redirect, render_template, session
+from flask import Flask, redirect, render_template, session, url_for
 from flask_oidc import OpenIDConnect
 from flask_migrate import Migrate
 from models import db
@@ -24,15 +24,41 @@ with app.app_context():
     db.create_all()
 
 @app.route('/')
+def index():
+    if oidc.user_loggedin:
+        return redirect('/patches')
+    else:
+        return redirect('/login')
+    
+@app.route('/login')
 def login():
-    return oidc.redirect_to_auth_server(config.oidc_redirect_uri)
+    session.permanent = True
+    
+    if 'oidc_auth_state' in session:
+        del session['oidc_auth_state']
+        
+    redirect_uri = url_for('oidc_callback', _external=True)
+    
+    return oidc.redirect_to_auth_server(redirect_uri)
 
 @app.route('/logout')
 def logout():
     oidc.logout()
-    response = redirect(config.oidc_logout_url)
-    response.set_cookie("session", expires=0)
-    return response
+    session.clear()
+    return redirect(config.oidc_logout_url)
+
+@app.route('/auth/callback')
+def oidc_callback():
+    try:
+        return redirect('/patches')
+    except Exception as e:
+        session.clear()
+        return render_template('errors/error.html',
+                              error_code="Auth",
+                              error_title="Authentication Error",
+                              error_message="There was a problem with your authentication. Please try again.",
+                              error_details=str(e),
+                              auto_redirect=True), 400
 
 # Error handling
 @app.errorhandler(404)
