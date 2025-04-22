@@ -66,7 +66,7 @@
 
                 {% if user_info %}
                     {% if not main %}
-                    {{ menu_item('Back to Patches', '/patches', 'arrow-left', request.path.startswith('/patches') and request.path != '/patches/new') }}
+                    {{ menu_item('Back to Dashboard', '/patches', 'arrow-left', request.path.startswith('/patches') and request.path != '/patches/new') }}
                     {% endif %}
 
                     <!-- Patches Section -->
@@ -74,16 +74,10 @@
                     {{ menu_item('New Patch', '/patches/new', 'plus', request.path == '/patches/new') }}
                     {{ menu_item('New Item', '/catalog/new', 'folder-plus', request.path == '/catalog/new') }}
 
-                    {% if not main and request.path.startswith('/patches/edit') or request.path.startswith('/catalog/edit') %}
-                    <!-- Back button for edit pages -->
-                    <div class="mt-6">
-                        <a href="/patches"
-                            class="block w-full px-4 py-2 bg-indigo-400/10 hover:bg-indigo-300/10 text-white rounded-xl flex items-center group">
-                            <img src="/static/icon/arrow-left.svg" alt="Back"
-                                class="w-5 h-5 invert mr-2 group-hover:-translate-x-1 transition-transform duration-200" />
-                            Back to Dashboard
-                        </a>
-                    </div>
+                    {% if main %}
+                    {{ menu_section('NAVIGATION') }}
+                    {{ menu_item('Patches', '#patches', 'git-fork', request.path.startswith('/hidden') and request.path != '/patches/new') }}
+                    {{ menu_item('Catalog', '#catalog', 'database', request.path.startswith('/hidden')) }}
                     {% endif %}
                     
                 {% else %}
