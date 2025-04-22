@@ -8,12 +8,12 @@
     <meta name="author" content="WiiLink Team" />
     <meta name="theme-color" content="#1F2937" />
     <link rel="icon" href="/static/icon/favicon.png" type="image/png" />
-    <title>{% block title %} {% endblock %}</title>
+    <title>{% block title %}{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="bg-gray-900 min-h-screen">
-    <div class="w-screen md:hidden fixed p-4 flex flex-row items-center justify-between z-30">
+    <div class="w-screen md:hidden fixed p-6 flex flex-row items-center justify-between z-30">
         <img src="/static/img/is_logo.png" alt="Logo" class="h-8" />
         <button id="mobileMenuBtn"
             class="p-2 bg-gray-800 rounded-lg text-white shadow-lg border border-gray-700 focus:outline-none">
@@ -24,12 +24,12 @@
     <div class="flex">
         <div id="sidebar"
             class="w-full max-w-[300px] h-screen bg-gray-800/80 backdrop-blur-xl border-r border-gray-700 p-6 fixed top-0 left-0 flex flex-col justify-between transform -translate-x-full md:translate-x-0 transition-transform duration-300 z-40">
-            <div class="overflow-y-scroll h-full">
+            <div class="overflow-y-auto h-full">
                 <div class="mb-6 flex justify-between items-start">
                     <div>
                         <img src="/static/img/is_logo.png" alt="Logo" class="h-10 mb-6" />
                         <h1 class="text-xl font-bold text-white mb-1">
-                            WiiLink Patch Manager
+                            The Atelier
                         </h1>
                         <p class="text-gray-400 text-sm italic">
                             I wonder if sweatshops also have patch managers...
@@ -41,50 +41,70 @@
                     </button>
                 </div>
 
-                {% if not main %}
-                <a href="/patches"
-                    class="mt-6 bg-indigo-400/10 hover:bg-indigo-300/10 text-white px-4 py-2 rounded-xl flex items-center jusfity-center group">
-                    <img src="/static/icon/arrow-left.svg" alt="Icon"
-                        class="w-5 h-5 invert mr-2 group-hover:-translate-x-1 transition-transform duration-200" />
-                    Back to Patches
+                {# Variable 'sidebar_menu' is used to add custom items to this page's sidebar menu. #}
+                
+                {% macro menu_section(title) %}
+                <p class="menu-label text-gray-400 text-sm font-medium mt-6 mb-2">
+                    {{ title }}
+                </p>
+                {% endmacro %}
+
+                {% macro menu_item(name, path, icon_name, is_active=false) %}
+                <a href="{{ path }}"
+                    class="block w-full px-4 py-2 {% if is_active %}bg-indigo-600 {% else %}bg-gray-700/40 hover:bg-gray-700/60{% endif %} text-white rounded-xl transition duration-200 flex items-center mb-2">
+                    <img src="/static/icon/{{ icon_name }}.svg" alt="{{ name }}" class="w-5 h-5 invert mr-2" />{{ name }}
                 </a>
-                {% endif %}
 
-                <div class="space-y-3 mt-8">
-                    <a href="/patches/new"
-                        class="w-full px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl transition duration-200 flex items-center">
-                        <img src="/static/icon/plus.svg" alt="Icon" class="w-5 h-5 invert mr-2" /> Create New Patch
-                    </a>
-
-                    <a href="/catalog/new"
-                        class="w-full px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl transition duration-200 flex items-center">
-                        <img src="/static/icon/folder-plus.svg" alt="Icon" class="w-5 h-5 invert mr-2" /> Create New
-                        Item
-                    </a>
+                {% if is_active %}
+                {% if sidebar_menu %}
+                <div class="ml-4 mt-1 mb-3">
+                    {{ sidebar_menu }}
                 </div>
+                {% endif %}
+                {% endif %}
+                {% endmacro %}
 
-                {% if main %}
-                <nav class="mt-8">
-                    <h3 class="text-xs uppercase font-semibold text-gray-400 tracking-wider mb-3">
-                        Navigation
-                    </h3>
-                    <ul class="space-y-2">
-                        <li>
-                            <a href="#patches"
-                                class="flex items-center text-gray-300 hover:text-white px-3 py-2 rounded-xl hover:bg-gray-700/50 transition-colors">
-                                <img src="/static/icon/git-fork.svg" alt="Icon" class="w-5 h-5 invert mr-2" />
-                                <span>Patches</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#catalog"
-                                class="flex items-center text-gray-300 hover:text-white px-3 py-2 rounded-xl hover:bg-gray-700/50 transition-colors">
-                                <img src="/static/icon/database.svg" alt="Icon" class="w-5 h-5 invert mr-2" />
-                                <span>Catalog</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
+                {% if user_info %}
+                    {% if not main %}
+                    {{ menu_item('Back to Patches', '/patches', 'arrow-left', request.path.startswith('/patches') and request.path != '/patches/new') }}
+                    {% endif %}
+
+                    <!-- Patches Section -->
+                    {{ menu_section('ACTIONS') }}
+                    {{ menu_item('New Patch', '/patches/new', 'plus', request.path == '/patches/new') }}
+                    {{ menu_item('New Item', '/catalog/new', 'folder-plus', request.path == '/catalog/new') }}
+
+                    {% if not main and request.path.startswith('/patches/edit') or request.path.startswith('/catalog/edit') %}
+                    <!-- Back button for edit pages -->
+                    <div class="mt-6">
+                        <a href="/patches"
+                            class="block w-full px-4 py-2 bg-indigo-400/10 hover:bg-indigo-300/10 text-white rounded-xl flex items-center group">
+                            <img src="/static/icon/arrow-left.svg" alt="Back"
+                                class="w-5 h-5 invert mr-2 group-hover:-translate-x-1 transition-transform duration-200" />
+                            Back to Dashboard
+                        </a>
+                    </div>
+                    {% endif %}
+                    
+                {% else %}
+                    <!-- Login Section -->
+                    <div class="space-y-3 mt-8">
+                        <a href="/login"
+                            class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition duration-200 flex items-center">
+                            <img src="/static/icon/log-in.svg" alt="Login" class="w-5 h-5 rotate-180 invert mr-2" />
+                            Login to Access
+                        </a>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-gray-700/40 rounded-lg border border-gray-700">
+                        <div class="flex items-center mb-2">
+                            <img src="/static/icon/info.svg" alt="Info" class="w-5 h-5 invert mr-2 opacity-70" />
+                            <h3 class="text-sm font-medium text-gray-300">Access Required</h3>
+                        </div>
+                        <p class="text-sm text-gray-400">
+                            You need to be logged in to manage patch content.
+                        </p>
+                    </div>
                 {% endif %}
             </div>
 
@@ -109,14 +129,14 @@
                         <div class="text-gray-400 text-sm">{{ user_info.full_name }}</div>
                     </div>
                 </div>
-                {% endif %}
-
+                
                 <a href="/logout"
                     class="flex items-center space-x-2 text-gray-400 hover:text-white transition-colors group mb-6">
                     <img src="/static/icon/log-out.svg" alt="Logout"
                         class="w-5 h-5 invert group-hover:-translate-x-1 transition-transform duration-200" />
                     <span>Logout</span>
                 </a>
+                {% endif %}
 
                 <p class="text-sm text-gray-500">© 2025 WiiLink Team</p>
             </div>
@@ -124,7 +144,17 @@
 
         <div id="sidebarOverlay" class="fixed inset-0 bg-gray-900/80 z-30 hidden md:hidden"></div>
 
-        <div class="mt-10 sm:mt-0 w-full md:ml-[300px] md:w-[calc(100%-300px)] min-h-screen">
+        <div class="mt-10 sm:mt-0 w-full md:ml-[300px] md:w-[calc(100%-300px)] min-h-screen p-6">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for message in messages %}
+            <div class="bg-yellow-500/20 border border-yellow-600/30 text-yellow-200 px-4 py-3 rounded-lg mb-6">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
             {% block content %}{% endblock %}
         </div>
     </div>
